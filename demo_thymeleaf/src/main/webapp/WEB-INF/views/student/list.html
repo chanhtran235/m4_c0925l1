@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <th:block th:insert="~{layout/layout::library}"/>
+</head>
+<body>
+<th:block th:replace="~{layout/layout::my-navbar}"></th:block>
+<h2>Student List</h2>
+<!--<h1 th:text="#{test}"></h1>-->
+<a class="btn btn-sm btn-success" href="student/add">Create student1</a>
+<!--<a th:href="@{student/add}">Create student2</a>-->
+<table class="table table-dark">
+    <tr>
+        <th>STT</th>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Gender</th>
+        <th>Subjects</th>
+        <th>Class ID</th>
+        <th>Detail-RQ</th>
+        <th>Detail-PathVariable</th>
+    </tr>
+
+    <tr th:each="student,status:${studentList}">
+        <td th:text="${status.count}"></td>
+        <td th:text="${student.id}"></td>
+        <td th:text="${student.name}"></td>
+        <td th:text="${student.gender}"></td>
+        <td>
+            <span th:each="subject:${student.subjects}" th:text="${subject}"></span>
+        </td>
+        <td th:text="${student.classId}"></td>
+        <td>
+            <a class="btn btn-sm btn-primary" th:href="@{/student/detail(id=${student.id})}">Detail1-RP</a>
+        </td>
+        <td>
+            <a class="btn btn-sm btn-primary"  th:href="@{/student/detail/__${student.id}__}">Detail1-PV</a>
+        </td>
+    </tr>
+</table>
+</body>
+</html>

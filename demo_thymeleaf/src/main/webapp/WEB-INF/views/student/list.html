@@ -17,7 +17,6 @@
         <th>ID</th>
         <th>Name</th>
         <th>Gender</th>
-        <th>Subjects</th>
         <th>Class ID</th>
         <th>Detail-RQ</th>
         <th>Detail-PathVariable</th>
@@ -28,9 +27,6 @@
         <td th:text="${student.id}"></td>
         <td th:text="${student.name}"></td>
         <td th:text="${student.gender}"></td>
-        <td>
-            <span th:each="subject:${student.subjects}" th:text="${subject}"></span>
-        </td>
         <td th:text="${student.classId}"></td>
         <td>
             <a class="btn btn-sm btn-primary" th:href="@{/student/detail(id=${student.id})}">Detail1-RP</a>

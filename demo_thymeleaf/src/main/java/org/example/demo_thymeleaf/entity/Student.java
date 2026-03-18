@@ -1,26 +1,21 @@
 package org.example.demo_thymeleaf.entity;
 
+import jakarta.persistence.*;
+
+@Entity
+//@Table(name = "sinh_vien")
 public class Student {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
+//    @Column(name = "ten", columnDefinition = "TEXT")
     private String name;
     private boolean gender;
-    private String[] subjects;
     private int classId;
 
     public Student() {
-    }
 
-    public Student(int id, String name) {
-        this.id = id;
-        this.name = name;
-    }
-
-    public Student(int id, String name, boolean gender, String[] languages, int classId) {
-        this.id = id;
-        this.name = name;
-        this.gender = gender;
-        this.subjects = languages;
-        this.classId = classId;
     }
 
     public boolean isGender() {
@@ -29,14 +24,6 @@ public class Student {
 
     public void setGender(boolean gender) {
         this.gender = gender;
-    }
-
-    public String[] getSubjects() {
-        return subjects;
-    }
-
-    public void setSubjects(String[] subjects) {
-        this.subjects = subjects;
     }
 
     public int getClassId() {

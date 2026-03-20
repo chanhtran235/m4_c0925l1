@@ -1,38 +1,33 @@
 package org.example.demo_thymeleaf.repository;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import org.example.demo_thymeleaf.entity.Student;
-import org.example.demo_thymeleaf.util.ConnectionUtil;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Repository
 public class StudentRepository implements IStudentRepository {
+
+    @PersistenceContext
+    private EntityManager entityManager;
     @Override
     public List<Student> findAll() {
-        Session session = ConnectionUtil.sessionFactory.openSession();
-//        TypedQuery<Student> query = session.createQuery("from Student");
-        TypedQuery<Student> query = session.createNativeQuery("select * from student", Student.class);
-        List<Student> studentList = query.getResultList();
-        session.close();
-        return studentList;
+         TypedQuery<Student> query = entityManager.createQuery("FROM Student ",Student.class);
+        return query.getResultList();
     }
 
+    @Transactional
     @Override
     public void add(Student student) {
-        Session session = ConnectionUtil.sessionFactory.openSession();
-        Transaction transaction = session.getTransaction();
-        transaction.begin();
-        session.save(student);
-        transaction.commit();
+         entityManager.persist(student);
     }
 
     @Override
     public Student findById(int id) {
-        Session session = ConnectionUtil.sessionFactory.openSession();
-        return session.find(Student.class,id);
+        return entityManager.find(Student.class,id);
     }
 }

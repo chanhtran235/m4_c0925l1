@@ -18,6 +18,13 @@ public class Student {
 
     }
 
+    public Student(int id, String name, boolean gender, int classId) {
+        this.id = id;
+        this.name = name;
+        this.gender = gender;
+        this.classId = classId;
+    }
+
     public boolean isGender() {
         return gender;
     }

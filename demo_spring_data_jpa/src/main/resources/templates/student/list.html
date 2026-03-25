@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <th:block th:insert="~{layout/layout::library}"/>
+</head>
+<body>
+<th:block th:replace="~{layout/layout::my-navbar}"></th:block>
+<h2>Student List</h2>
+<form action="/student" method="get">
+    <input name="searchName" placeholder="enter name" th:value="${searchName}">
+    <button>Search</button>
+</form>
+<a class="btn btn-sm btn-success" href="student/add">Create student1</a>
+<!--<a th:href="@{student/add}">Create student2</a>-->
+<table class="table table-dark">
+    <tr>
+        <th>STT</th>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Gender</th>
+        <th>Class Name</th>
+        <th>Detail-RQ</th>
+        <th>Detail-PathVariable</th>
+    </tr>
+
+    <tr th:each="student,status:${studentPage}">
+        <td th:text="${status.count}"></td>
+        <td th:text="${student.id}"></td>
+        <td th:text="${student.name}"></td>
+        <td th:text="${student.gender}"></td>
+        <td th:text="${student?.getClasses()?.name}"></td>
+        <td>
+            <a class="btn btn-sm btn-primary" th:href="@{/student/detail(id=${student.id})}">Detail1-RP</a>
+        </td>
+        <td>
+            <a class="btn btn-sm btn-primary"  th:href="@{/student/detail/__${student.id}__}">Detail1-PV</a>
+        </td>
+    </tr>
+</table>
+<div>
+    <a th:if="${studentPage.hasPrevious()}" class="btn btn-sm btn-primary" th:href="@{/student(page =${studentPage.number - 1 },searchName =${searchName})}">Previous</a>
+    <span th:text="${studentPage.number + 1}"></span>/<span th:text="${studentPage.totalPages}"></span>
+    <a th:if="${studentPage.hasNext()}" class="btn btn-sm btn-primary" th:href="@{/student(page =${studentPage.number + 1 },searchName =${searchName})}">Next</a>
+
+</div>
+</body>
+</html>

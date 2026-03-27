@@ -1,7 +1,11 @@
 package org.example.demo_spring_data_jpa.controller;
 
+import jakarta.validation.Valid;
+import org.example.demo_spring_data_jpa.dto.StudentDto;
 import org.example.demo_spring_data_jpa.entity.Student;
 import org.example.demo_spring_data_jpa.service.IStudentService;
+import org.example.demo_spring_data_jpa.validation.StudentValidation;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -11,6 +15,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -39,7 +44,7 @@ public class StudentController {
                            ModelMap model){
 
         Sort sort = Sort.by("name").descending().and(Sort.by("gender").ascending());
-        Pageable pageable = PageRequest.of(page,2,sort);
+        Pageable pageable = PageRequest.of(page,20,sort);
         Page<Student> studentPage =  studentService.search(searchName,pageable);
         model.addAttribute("studentPage", studentPage);
         model.addAttribute("searchName", searchName);
@@ -47,13 +52,19 @@ public class StudentController {
     }
     @GetMapping("/add")
     public String showFormAdd(Model model){
-        model.addAttribute("student", new Student());
+        model.addAttribute("studentDto", new StudentDto());
         return "student/add";
     }
 
     @PostMapping("/add")
-    public  String save(@ModelAttribute Student student,
+    public  String save(@Valid @ModelAttribute StudentDto studentDto, BindingResult bindingResult,
                         RedirectAttributes redirectAttributes){
+              new StudentValidation().validate(studentDto,bindingResult);
+              if (bindingResult.hasErrors()){
+                  return "/student/add";
+              }
+              Student student = new Student();
+        BeanUtils.copyProperties(studentDto,student);
               studentService.add(student);
               redirectAttributes.addFlashAttribute("mess","is add success");
         return "redirect:/student";

@@ -3,6 +3,7 @@ package org.example.demo_spring_data_jpa.controller;
 import jakarta.validation.Valid;
 import org.example.demo_spring_data_jpa.dto.StudentDto;
 import org.example.demo_spring_data_jpa.entity.Student;
+import org.example.demo_spring_data_jpa.exception.DuplicateAdmin;
 import org.example.demo_spring_data_jpa.service.IStudentService;
 import org.example.demo_spring_data_jpa.validation.StudentValidation;
 import org.springframework.beans.BeanUtils;
@@ -28,16 +29,6 @@ public class StudentController {
     private IStudentService studentService;
 
 
-//    @GetMapping("")
-//    public String showList(@PageableDefault(page = 0,size = 2,sort = "name",direction = Sort.Direction.DESC) Pageable pageable,
-//                         @RequestParam(name = "searchName", required = false,defaultValue = "")String searchName,
-//                         ModelMap model){
-//        Page<Student> studentPage =  studentService.search(searchName,pageable);
-//        model.addAttribute("studentPage", studentPage);
-//        model.addAttribute("searchName", searchName);
-//        return "student/list";
-//    }
-
     @GetMapping("")
     public String showList(@RequestParam(name = "page",required = false,defaultValue = "0")int page,
                            @RequestParam(name = "searchName", required = false,defaultValue = "")String searchName,
@@ -48,6 +39,7 @@ public class StudentController {
         Page<Student> studentPage =  studentService.search(searchName,pageable);
         model.addAttribute("studentPage", studentPage);
         model.addAttribute("searchName", searchName);
+        System.out.println("Nghiệp vụ chính chạy");
         return "student/list";
     }
     @GetMapping("/add")
@@ -58,7 +50,7 @@ public class StudentController {
 
     @PostMapping("/add")
     public  String save(@Valid @ModelAttribute StudentDto studentDto, BindingResult bindingResult,
-                        RedirectAttributes redirectAttributes){
+                        RedirectAttributes redirectAttributes) throws DuplicateAdmin {
               new StudentValidation().validate(studentDto,bindingResult);
               if (bindingResult.hasErrors()){
                   return "/student/add";
@@ -82,5 +74,10 @@ public class StudentController {
                           Model model){
         model.addAttribute("student",studentService.findById(id));
         return "student/detail";
+    }
+
+    @ExceptionHandler(DuplicateAdmin.class)
+    public String duplicateException(){
+        return "duplicate-errors";
     }
 }
